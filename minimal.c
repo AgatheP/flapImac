@@ -16,22 +16,20 @@ static const unsigned int BIT_PER_PIXEL = 32;
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
 
 /*********************************************************************************  STRUCTURES  */
-typedef struct Point{
-    float x,y;
-} Point;
 
-typedef struct Player{
+typedef struct ship{
     float x,y;
-    int pvMax;
-    int pv;
+    int hpMax;
+    int hp;
     //coordonnée d'un point de la bounding box relativement au centre du joueur (le 2e s'obtien avec une multiplication par -1)
     float Bx,By;
     //texture à rajouter par le suite
-} Player;
+    //cadence de tir
+} Ship;
 
 typedef struct Lazer{
     float x,y;
-    float vitesse;
+    float speed;
     int dir; //dirrection du tir (1: ->, -1: <-)
     unsigned char r,g,b; //couleur
     struct Lazer* next;
@@ -51,16 +49,16 @@ void windowResize(int height, int width){
 }
 
 
-Player* allocPlayer(float x,float y, int pvMax, int width, int height){
+Ship* allocShip(float x,float y, int hpMax, int width, int height){
     //créer le joueur et le placer au milieu de la hauteur de l'écrant
     if(x>WINDOW_WIDTH){
         printf("Erreur création du joueur\n");
         exit(1);
     }
-    Player* p=(Player*) malloc(sizeof(Player));
+    Ship* p=(Ship*) malloc(sizeof(Ship));
     if(!p){exit(1);}
-    p->pvMax=pvMax;
-    p->pv=pvMax;
+    p->hpMax=hpMax;
+    p->hp=hpMax;
     p->y=y;
     p->x=x;
     //création de la bounding box
@@ -70,7 +68,7 @@ Player* allocPlayer(float x,float y, int pvMax, int width, int height){
 }
 
 
-void drawPlayer(Player* joueur){
+void drawShip(Ship* joueur){
     //pour l'instant on ne dessine que la bounding box
     glPointSize(8);
     glPushMatrix();
@@ -115,14 +113,14 @@ void drawLazers(LazerList list){
     }
 }
 
-Lazer* allocLazer(float x,float y, int dir,float vitesse,unsigned char r, unsigned char g, unsigned char b){
+Lazer* allocLazer(float x,float y, int dir,float speed,unsigned char r, unsigned char g, unsigned char b){
     Lazer* lazer=(Lazer*) malloc(sizeof(Lazer));
     if(!lazer){
         return NULL;
     }
     lazer->x = x;
     lazer->y = y;
-    lazer->vitesse=vitesse;
+    lazer->speed=speed;
     lazer->dir = dir;
     lazer->r = r;
     lazer->g = g;
@@ -173,9 +171,9 @@ int main(int argc, char** argv) {
     int mooveDown=0;
 
     //Initialisation du joueur
-    Player* joueur=allocPlayer(-60,0,10,7,5);
+    Ship* joueur=allocShip(-60,0,10,7,5);
     LazerList lazers=NULL;
-    int vitesseJoueur=1;
+    int speedJoueur=1;
 
     int posYmax=63; //pour l'instant fait à l'oeuil (il faudrait trouver le moyen de le calculer)
     int posYmin=-63;
@@ -190,7 +188,7 @@ int main(int argc, char** argv) {
         
         /* Placer ici le code de dessin */
         glClear(GL_COLOR_BUFFER_BIT);
-        drawPlayer(joueur);
+        drawShip(joueur);
         drawLazers(lazers);
         //opérations à faire sur tous les lazers
         //TO DO: faire une boucle pour appeler les fonction sur chaque lazer
@@ -234,13 +232,13 @@ int main(int argc, char** argv) {
                         case SDLK_UP:
                             printf("*** UP ***\n");
                             mooveUp=1;
-                            //joueur->y+=vitesseJoueur;
+                            //joueur->y+=speedJoueur;
                             break;
 
                         case SDLK_DOWN:
                             printf("*** DOWN ***\n");
                             mooveDown=1;
-                            //joueur->y-=vitesseJoueur;
+                            //joueur->y-=speedJoueur;
                             break;
 
                         case SDLK_SPACE:
@@ -250,9 +248,9 @@ int main(int argc, char** argv) {
                         case SDLK_i:
                             printf("*** INFO JOUEUR***\n");
                             printf("Position: (%f,%f)\n",joueur->x,joueur->y);
-                            printf("PV: %d/%d\n",joueur->pv, joueur->pvMax);
+                            printf("PV: %d/%d\n",joueur->hp, joueur->hpMax);
                             printf("Position de la boundingBox:(%2f,%2f) (%2f,%2f)\n", joueur->Bx,joueur->By,-joueur->Bx,-joueur->By);
-                            printf("Vitesse du joueur: %d\n",vitesseJoueur);
+                            printf("Vitesse du joueur: %d\n",speedJoueur);
                             break;
                         default: break;
                     }
@@ -286,10 +284,10 @@ int main(int argc, char** argv) {
         // Deplacer le joueur sauf s'il apuis sur les 2 flèches en même temps
         if(mooveUp==0 ||mooveDown==0){
             if(mooveUp && joueur->y<posYmax){
-                joueur->y+=vitesseJoueur;
+                joueur->y+=speedJoueur;
             }
             if(mooveDown && joueur->y>posYmin){
-                joueur->y-=vitesseJoueur;
+                joueur->y-=speedJoueur;
             }
         }
 
