@@ -100,7 +100,15 @@ void addShipToList(Ship* ship, ShipList* list){
         addShipToList(ship,&(*list)->next);
     }
 }
-
+void freeShipList(ShipList* l){
+    if((*l)->next!=NULL){
+        ShipList tmpList=(*l)->next;
+        free(l);
+        freeShipList(&tmpList);
+    }else{
+        free(l);
+    }
+}
 
 void drawLazer(Lazer* lazer){
     glPointSize(7);
@@ -161,6 +169,15 @@ int remooveLazerFromList(LazerList* lazer, LazerList* list){
         return 1;
     }
     return remooveLazerFromList(lazer, &(*list)->next);
+}
+void freeLazers(LazerList* l){
+    if((*l)->next!=NULL){
+        LazerList tmpList=(*l)->next;
+        l=NULL;
+        freeLazers(&tmpList);
+    }else{
+        l=NULL;
+    }
 }
 
 int remooveShipFromList(ShipList* ship, ShipList* list){
@@ -305,8 +322,9 @@ int main(int argc, char** argv) {
                     switch(e.key.keysym.sym){
                         case SDLK_q:
                             printf("Quiter le programme.\n");
-                            SDL_Quit();
-                            return EXIT_SUCCESS;
+                            loop=0;
+                            //SDL_Quit();
+                            //return EXIT_SUCCESS;
                             break;
                         case SDLK_h:
                             help();
@@ -383,8 +401,12 @@ int main(int argc, char** argv) {
         if(elapsedTime < FRAMERATE_MILLISECONDS) {
             SDL_Delay(FRAMERATE_MILLISECONDS - elapsedTime);
         }
-    }
 
+    }
+    printf("Libération de la mémoire\n");
+    free(joueur);
+    freeLazers(&lazers);
+    //freeShipList(&foes);
     /* Liberation des ressources associées à la SDL */ 
     SDL_Quit();
 
