@@ -30,15 +30,16 @@ void loadLevel(ShipList *foes, BlockList *obstacles) {
   //crée et place block, ennemis et bonus aux coordonnées correspondantes
   for(int i = 0; i < 10; i++) {
     for(int j = 0; j < 100; j++) {
+      int posX = j*playableHeight/10;
+      int posY = -i*playableHeight/10 + playableHeight/2;
       if(tab[i][j][0] == 255 && tab[i][j][1] == 0 && tab[i][j][2] == 0) {
         //rouge, ajouter un block
-        addBlockToList(allocBlock(i,j), obstacles);
+        addBlockToList(allocBlock(posX, posY), obstacles);
         printf("Block chargé\n");
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 255 && tab[i][j][2] == 0) {
         //vert, ajouter un ennemi
-        //allocShip(float x,float y, int hpMax, int width, int height, int fireRate)
-        addShipToList(allocShip(i,j,1,5,5,40), foes);
+        addShipToList(allocShip(posX,posY,1,5,5,40), foes);
         printf("Ennemi chargé\n");
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 0 && tab[i][j][2] == 255) {

@@ -34,6 +34,13 @@ void help(){
     printf("Aide: h\n");
     return;
 }
+
+void tailleVirtuelle() {
+  glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluOrtho2D(-1., 1., -1., 1.);
+}
 /*********************************************************************************  MAIN  */
 int main(/*int argc, char** argv*/) {
 
@@ -48,6 +55,7 @@ int main(/*int argc, char** argv*/) {
         fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
         return EXIT_FAILURE;
     }
+    tailleVirtuelle();
     glClearColor(0.1,0.1,0.1,1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -55,10 +63,11 @@ int main(/*int argc, char** argv*/) {
     SDL_WM_SetCaption("Flapimac", NULL);
     int mooveUp=0;
     int mooveDown=0;
-    float scrollSpeed=0.35; //vitesse de déplacement horizontal du jeu
+
 
     //Initialisation du joueur
-    Ship* joueur=allocShip(-60,0,10,7,5,50);
+    int shipHeight = 5;
+    Ship* joueur=allocShip(-60,0,10,7,shipHeight,50);
     int speedJoueur=1;
 
     LazerList lazers=NULL;
@@ -66,8 +75,8 @@ int main(/*int argc, char** argv*/) {
     BlockList obstacles=NULL;
 
 
-    int posYmax=37; //pour l'instant fait à l'oeuil (il faudrait trouver le moyen de le calculer)
-    int posYmin=-37;
+    int posYmax= (playableHeight-shipHeight)/2; //pour l'instant fait à l'oeuil (il faudrait trouver le moyen de le calculer)
+    int posYmin= -posYmax;
 
     /* Initialisation*/
     //Lire le PPM pour connaitre la position de chaque énémi/obstache/bonnus et les metres dans les listes
