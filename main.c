@@ -73,14 +73,7 @@ int main(/*int argc, char** argv*/) {
 
     /* Boucle d'affichage */
     int loop = 1;
-
-    /*Test*/
-    addShipToList(allocShip(30,0,1,5,5,40),&foes);
-    addShipToList(allocShip(0,20,1,5,5,40),&foes);
-    addShipToList(allocShip(90,20,1,5,5,40),&foes);
-
-    addBlockToList(allocBlock(0,25), &obstacles);
-    /*Test*/
+    
     while(loop) {
 
         /* Récupération du temps au début de la boucle */
