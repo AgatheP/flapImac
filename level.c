@@ -6,7 +6,7 @@
 #include "parameters.h"
 
 
-void loadLevel(ShipList *foes) {
+void loadLevel(ShipList *foes, BlockList *obstacles) {
   int tab[10][100][3];
   char line[3];
 
@@ -32,6 +32,7 @@ void loadLevel(ShipList *foes) {
     for(int j = 0; j < 100; j++) {
       if(tab[i][j][0] == 255 && tab[i][j][1] == 0 && tab[i][j][2] == 0) {
         //rouge, ajouter un block
+        addBlockToList(allocBlock(i,j), obstacles);
         printf("Block chargé\n");
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 255 && tab[i][j][2] == 0) {

@@ -71,7 +71,7 @@ int main(/*int argc, char** argv*/) {
 
     /* Initialisation*/
     //Lire le PPM pour connaitre la position de chaque énémi/obstache/bonnus et les metres dans les listes
-    loadLevel(&foes);
+    loadLevel(&foes, &obstacles);
     /* Boucle d'affichage */
     int loop = 1;
 

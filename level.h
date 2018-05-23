@@ -8,7 +8,7 @@
 #include "parameters.h"
 
 
-void loadLevel(ShipList *foes);
+void loadLevel(ShipList *foes, BlockList *obstacles);
 
 
 #endif
