@@ -100,7 +100,7 @@ void freeLazers(LazerList* l){
         freeLazers(&tmpList);
     }else{
         l=NULL;
-        free(*l);
+        //free(*l);
     }
 }
 

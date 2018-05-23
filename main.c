@@ -85,7 +85,7 @@ int main(/*int argc, char** argv*/) {
     int loop = 1;
 
     while(loop) {
-
+        loop+=1;
         /* Récupération du temps au début de la boucle */
         Uint32 startTime = SDL_GetTicks();
 
@@ -97,7 +97,7 @@ int main(/*int argc, char** argv*/) {
         while(tmpLazer!=NULL){
             tmpLazer->x+=tmpLazer->speed; //déplacer le lazer
             //vérifier si le lazer est tjrs dans l'écran
-            if(tmpLazer->x>=WINDOW_WIDTH*0.06 || tmpLazer->x<WINDOW_WIDTH*-0.06){
+            if(tmpLazer->x>=WINDOW_WIDTH*0.04 || tmpLazer->x<=WINDOW_WIDTH*-0.04){
                 // retirer le lazer de la liste
                 removeLazerFromList(&tmpLazer, &lazers);
                 tmpLazer=tmpLazer->next;
@@ -114,16 +114,18 @@ int main(/*int argc, char** argv*/) {
         while(tmpShip!=NULL){
             tmpShip->x-=scrollSpeed;
             //vérifier que le vaiseau n'a pas traversé l'écran
-            if(tmpShip->x<(WINDOW_WIDTH*-0.06)){
+            if(tmpShip->x<(WINDOW_WIDTH*-0.04)){
                 printf("removeShip.\n");
                 removeShipFromList(&tmpShip,&foes);
                 tmpShip=tmpShip->next;
                 continue;
             }
             //déssiner le vaiseau s'il est dans l'écran
-            if(tmpShip->x<=(WINDOW_WIDTH*0.06)){
+            if(tmpShip->x<=(WINDOW_WIDTH*0.04)){
                 drawShip(tmpShip);
-                //TO DO: faire tirer l'énemi
+                if(loop % (tmpShip->fireRate)==0){
+                    addLazerToList(allocLazer(tmpShip->x, tmpShip->y, -0.7, 255,0,0), &lazers);
+                }
             }
             tmpShip=tmpShip->next;
         }
@@ -132,14 +134,14 @@ int main(/*int argc, char** argv*/) {
         while(tmpBlock!=NULL){
             tmpBlock->x-=scrollSpeed;
 
-            if(tmpBlock->x<(WINDOW_WIDTH*-0.06)){
+            if(tmpBlock->x<(WINDOW_WIDTH*-0.04)){
                 printf("removeBlock.\n");
                 removeBlockFromList(&tmpBlock, &obstacles);
                 tmpBlock=tmpBlock->next;
                 continue;
             }
             //dessiner le block s'il est dans l'écran
-            if(tmpBlock->x<=(WINDOW_WIDTH*0.06)){
+            if(tmpBlock->x<=(WINDOW_WIDTH*0.04)){
                 drawBlock(tmpBlock);
             }
 
