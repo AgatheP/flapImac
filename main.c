@@ -22,6 +22,21 @@ void windowResize(int height, int width){
     SDL_SetVideoMode(WINDOW_WIDTH,WINDOW_HEIGHT,BIT_PER_PIXEL,SDL_OPENGL | SDL_RESIZABLE);
 }
 
+//détercte si collision entre 2 bounding box
+int collision(int B1x, int B1y, int B2x, int B2y,
+   int B3x, int B3y, int B4x, int B4y) {
+   if(B3x <= B1x <= B4x && B3y <= B1y <= B4y
+     || B3x <= B2x <= B4x && B3y <= B2y <= B4y) {
+     printf("Bbox 1 dans bbox2\n");
+     return 1;
+   }
+   if(Bx1 <= Bx3 <= Bx2 && By1 <= By3 <= By2
+     || Bx1 <= Bx4 <= Bx2 && By1 <= By4 <= By2) {
+     printf("Bbox2 dans bbox1\n");
+     return 1;
+   }
+   return 0
+}
 
 void help(){
     printf("*** HELP ***\n");
