@@ -1,36 +1,32 @@
-CC       =  gcc
-CFLAGS   = -Wall -O2 -g
-LIB      = -lSDL -lGLU -lGL -lm  
-INCLUDES = 
+ifdef COMSPEC
+ MV ?= move
+ RM ?= del
+else
+ MV ?= mv -f
+ RM ?= rm -f
+endif
 
-OBJ      = minimal.o 
-RM       = rm -f
-BIN      = minimal
-DIRNAME  = $(shell basename $$PWD)
-BACKUP   = $(shell date +`basename $$PWD`-%m.%d.%H.%M.tgz)
-STDNAME  = $(DIRNAME).tgz
+CC=gcc
+CFLAGS= -W -Wall
+LDFLAGS= -lSDL -lGLU -lGL -lm
+EXEC=main
+SRC= $(wildcard *.c)
+OBJ= $(SRC:.c=.o)
 
-all : $(BIN)
+all: $(EXEC)
 
-$(BIN) : $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIB) $(INCLUDES)  -o $(BIN)
-	@echo "--------------------------------------------------------------"
-	@echo "                 to execute type: ./$(BIN) &"
-	@echo "--------------------------------------------------------------"
+main: $(OBJ)
+	@$(CC) -o $@ $^ $(LDFLAGS)
 
-minimal.o : minimal.c
-	@echo "compile minimal"
-	$(CC) $(CFLAGS) -c $<  
-	@echo "done..."
+main.o: structures.h draw.h parameters.h level.h
 
-clean :	
-	@echo "**************************"
-	@echo "CLEAN"
-	@echo "**************************"
-	$(RM) *~ $(OBJ) $(BIN) 
+%.o: %.c
+	@$(CC) -o $@ -c $< $(CFLAGS)
 
-tar : clean 
-	@echo "**************************"
-	@echo "TAR"
-	@echo "**************************"
-	cd .. && tar cvfz $(BACKUP) $(DIRNAME)
+.PHONY: clean mrproper
+
+clean:
+	@$(RM) *.o
+
+mrproper: clean
+	@$(RM) $(EXEC)

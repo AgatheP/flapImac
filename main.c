@@ -4,37 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/*********************************************************************************  CONSTANTES  */
-/* Dimensions de la fenêtre */
-static unsigned int WINDOW_WIDTH = 1100;
-static unsigned int WINDOW_HEIGHT = 500;
+#include "parameters.h"
+#include "structures.h"
+#include "draw.h"
 
-/* Nombre de bits par pixel de la fenêtre */
-static const unsigned int BIT_PER_PIXEL = 32;
-
-/* Nombre minimal de millisecondes separant le rendu de deux images */
-static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
-static float BBLazer = 2; //La bounding box des lazers est carré et on ne donne que la moitiée du côté
-
-/*********************************************************************************  STRUCTURES  */
-
-typedef struct ship{
-    float x,y;
-    int hpMax;
-    int hp;
-    //coordonnée d'un point de la bounding box relativement au centre du joueur (le 2e s'obtien avec une multiplication par -1)
-    float Bx,By;
-    //texture à rajouter par le suite
-    int fireRate;
-    struct ship* next;
-} Ship,*ShipList;
-
-typedef struct Lazer{
-    float x,y;
-    float speed; //>0 : ->, <0 : <-
-    unsigned char r,g,b; //couleur
-    struct Lazer* next;
-}Lazer, *LazerList;
 
 /*********************************************************************************  FONCTIONS  */
 
@@ -49,153 +22,6 @@ void windowResize(int height, int width){
     SDL_SetVideoMode(WINDOW_WIDTH,WINDOW_HEIGHT,BIT_PER_PIXEL,SDL_OPENGL | SDL_RESIZABLE);
 }
 
-void drawShip(Ship* joueur){
-    //pour l'instant on ne dessine que la bounding box
-    glPointSize(8);
-    glPushMatrix();
-        //se placer au centre du joueur
-        glScalef(0.015,0.025,0);
-        glTranslatef(joueur->x,joueur->y,0);
-        //dessiner le joueur
-        //centre
-        glBegin(GL_POINTS);
-            glColor3ub(255,255,255);
-            glVertex2i(0,0);
-        glEnd();
-        //bounding box
-        glBegin(GL_LINE_LOOP);
-            glColor3ub(0,255,0);
-            glVertex2f(joueur->Bx,joueur->By);
-            glVertex2f(joueur->Bx,-joueur->By);
-            glVertex2f(-joueur->Bx,-joueur->By);
-            glVertex2f(-joueur->Bx,joueur->By);
-        glEnd();
-    glPopMatrix();
-    return;
-}
-
-Ship* allocShip(float x,float y, int hpMax, int width, int height, int fireRate){
-    //créer le joueur et le placer au milieu de la hauteur de l'écrant
-    if(x>WINDOW_WIDTH){
-        printf("Erreur création du joueur\n");
-        exit(1);
-    }
-    Ship* p=(Ship*) malloc(sizeof(Ship));
-    if(!p){exit(1);}
-    p->hpMax=hpMax;
-    p->hp=hpMax;
-    p->y=y;
-    p->x=x;
-    //création de la bounding box
-    p->Bx=(float)width/2.0;
-    p->By=(float)height/2.0;
-    p->fireRate=fireRate;
-    p->next=NULL;
-    return p;
-}
-void addShipToList(Ship* ship, ShipList* list){
-    if(*list==NULL){
-        *list = ship;
-    }else{
-        addShipToList(ship,&(*list)->next);
-    }
-}
-void freeShipList(ShipList* l){
-    if((*l)->next!=NULL){
-        freeShipList(&(*l)->next);
-        l=NULL;
-        free(l);
-    }else{
-        l=NULL;
-        free(l);
-    }
-}
-
-void drawLazer(Lazer* lazer){
-    glPointSize(7);
-    glPushMatrix();
-        glScalef(0.015,0.025,0);
-        glTranslatef(lazer->x,lazer->y,0);
-        glBegin(GL_POINTS);
-            glColor3ub(lazer->r,lazer->g,lazer->b);
-            glVertex2i(0,0);
-        glEnd();
-        //bounding box
-        glBegin(GL_LINE_LOOP);
-            glColor3ub(255,255,255);
-            glVertex2f(BBLazer,BBLazer);
-            glVertex2f(BBLazer,-BBLazer);
-            glVertex2f(-BBLazer,-BBLazer);
-            glVertex2f(-BBLazer,BBLazer);
-        glEnd();
-    glPopMatrix();
-    return;
-}
-
-Lazer* allocLazer(float x,float y, float speed,unsigned char r, unsigned char g, unsigned char b){
-    Lazer* lazer=(Lazer*) malloc(sizeof(Lazer));
-    if(!lazer){
-        return NULL;
-    }
-    lazer->x = x;
-    lazer->y = y;
-    lazer->speed=speed;
-    lazer->r = r;
-    lazer->g = g;
-    lazer->b = b;
-    lazer->next=NULL;
-    return lazer;
-}
-
-void addLazerToList(Lazer* lazer, LazerList* list){
-    if(*list == NULL){
-        *list = lazer;
-    }else{
-        addLazerToList(lazer, &(*list)->next);
-    }
-}
-
-int remooveLazerFromList(LazerList* lazer, LazerList* list){
-    if(*list == NULL || *lazer == NULL) return 0;
-    //il faut retirer le premier de la liste
-    if(*lazer == *list){
-        *list=(*list)->next;
-        free(*lazer);
-        return 1;
-    }
-    //il faut supprimer celui qui n'est pas le premier
-    if(*lazer==(*list)->next){
-        (*list)->next=(*lazer)->next;
-        free(*lazer);
-        return 1;
-    }
-    return remooveLazerFromList(lazer, &(*list)->next);
-}
-void freeLazers(LazerList* l){
-    if((*l)->next!=NULL){
-        LazerList tmpList=(*l)->next;
-        l=NULL;
-        freeLazers(&tmpList);
-    }else{
-        l=NULL;
-    }
-}
-
-int remooveShipFromList(ShipList* ship, ShipList* list){
-    if(*list==NULL || *ship==NULL) return 0;
-    //s'il s'agit du premier de la liste
-    if(*ship == *list){
-        *list=(*list)->next;
-        free(*ship);
-        return 1;
-    }
-    if(*ship == (*list)->next){
-        (*list)->next=(*ship)->next;
-        free(ship);
-        return 1;
-    }
-    return remooveShipFromList(ship,&(*list)->next);
-}
 
 void help(){
     printf("*** HELP ***\n");
@@ -214,7 +40,7 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Impossible d'initialiser la SDL. Fin du programme.\n");
         return EXIT_FAILURE;
     }
-    
+
     /* Ouverture d'une fenêtre et création d'un contexte OpenGL */
     if(NULL == SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, BIT_PER_PIXEL, SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_RESIZABLE)) {
         fprintf(stderr, "Impossible d'ouvrir la fenetre. Fin du programme.\n");
@@ -224,7 +50,7 @@ int main(int argc, char** argv) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     /* Titre de la fenêtre */
-    SDL_WM_SetCaption("Hello l'IMAC!", NULL);
+    SDL_WM_SetCaption("Flapimac", NULL);
     int mooveUp=0;
     int mooveDown=0;
     float scrollSpeed=0.35; //vitesse de déplacement horizontal du jeu
@@ -254,7 +80,7 @@ int main(int argc, char** argv) {
 
         /* Récupération du temps au début de la boucle */
         Uint32 startTime = SDL_GetTicks();
-        
+
         /* Placer ici le code de dessin */
         glClear(GL_COLOR_BUFFER_BIT);
         drawShip(joueur);
@@ -265,7 +91,7 @@ int main(int argc, char** argv) {
             //vérifier si le lazer est tjrs dans l'écran
             if(tmpLazer->x>=WINDOW_WIDTH*0.06 || tmpLazer->x<WINDOW_WIDTH*-0.06){
                 // retirer le lazer de la liste
-                remooveLazerFromList(&tmpLazer, &lazers);
+                removeLazerFromList(&tmpLazer, &lazers);
                 tmpLazer=tmpLazer->next;
                 continue;
             }
@@ -282,7 +108,7 @@ int main(int argc, char** argv) {
 
             //vérifier si le vaiseau est tjrs dans l'écran
             if(tmpShip->x>=(WINDOW_WIDTH*0.06) || tmpShip->x<(WINDOW_WIDTH*-0.06)){
-                remooveShipFromList(&tmpShip,&foes);
+                removeShipFromList(&tmpShip,&foes);
                 tmpShip=tmpShip->next;
                 continue;
             }
@@ -419,7 +245,7 @@ int main(int argc, char** argv) {
     }else{
         printf("(pas d'énemis à libérer.)\n");
     }
-    /* Liberation des ressources associées à la SDL */ 
+    /* Liberation des ressources associées à la SDL */
     SDL_Quit();
 
     return EXIT_SUCCESS;
