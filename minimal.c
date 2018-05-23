@@ -102,10 +102,11 @@ void addShipToList(Ship* ship, ShipList* list){
 }
 void freeShipList(ShipList* l){
     if((*l)->next!=NULL){
-        ShipList tmpList=(*l)->next;
+        freeShipList(&(*l)->next);
+        l=NULL;
         free(l);
-        freeShipList(&tmpList);
     }else{
+        l=NULL;
         free(l);
     }
 }
@@ -403,10 +404,21 @@ int main(int argc, char** argv) {
         }
 
     }
-    printf("Libération de la mémoire\n");
+    printf("Libération de la mémoire:\n");
+    printf("- Libération joueur\n");
     free(joueur);
-    freeLazers(&lazers);
-    //freeShipList(&foes);
+    printf("- Liberation lazers\n");
+    if(lazers != NULL){
+        freeLazers(&lazers);
+    }else{
+        printf("(pas de lazers à supprimer)\n");
+    }
+    printf("- Liberation des énémis\n");
+    if(foes != NULL){
+        freeShipList(&foes);
+    }else{
+        printf("(pas d'énemis à libérer.)\n");
+    }
     /* Liberation des ressources associées à la SDL */ 
     SDL_Quit();
 
