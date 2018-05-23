@@ -35,7 +35,7 @@ void drawLazer(Lazer* lazer){
         glTranslatef(lazer->x,lazer->y,0);
         glBegin(GL_POINTS);
             glColor3ub(lazer->r,lazer->g,lazer->b);
-            glVertex2i(0,0);
+            glVertex2f(0,0);
         glEnd();
         //bounding box
         glBegin(GL_LINE_LOOP);
@@ -44,6 +44,26 @@ void drawLazer(Lazer* lazer){
             glVertex2f(BBLazer,-BBLazer);
             glVertex2f(-BBLazer,-BBLazer);
             glVertex2f(-BBLazer,BBLazer);
+        glEnd();
+    glPopMatrix();
+    return;
+}
+
+void drawBlock(Block* block){
+    glPointSize(10);
+    glPushMatrix();
+        glScalef(0.015,0.025,0);
+        glTranslatef(block->x, block->y, 0);
+        glBegin(GL_POINTS);
+            glColor3ub(255,120,0);
+            glVertex2f(0,0);
+        glEnd();
+        glBegin(GL_LINE_LOOP);
+            glColor3ub(255,120,0);
+            glVertex2f(+5, +5);
+            glVertex2f(+5, -5);
+            glVertex2f(-5, -5);
+            glVertex2f(-5, +5);
         glEnd();
     glPopMatrix();
     return;

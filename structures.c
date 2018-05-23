@@ -28,10 +28,10 @@ void freeShipList(ShipList* l){
     if((*l)->next!=NULL){
         freeShipList(&(*l)->next);
         l=NULL;
-        free(l);
+        //free(l);
     }else{
         l=NULL;
-        free(l);
+        //free(l);
     }
 }
 
@@ -40,12 +40,14 @@ int removeShipFromList(ShipList* ship, ShipList* list){
     //s'il s'agit du premier de la liste
     if(*ship == *list){
         *list=(*list)->next;
-        free(*ship);
+        ship=NULL;
+        //free(*ship);
         return 1;
     }
     if(*ship == (*list)->next){
         (*list)->next=(*ship)->next;
-        free(ship);
+        ship=NULL;
+        //free(*ship);
         return 1;
     }
     return removeShipFromList(ship,&(*list)->next);
@@ -79,13 +81,13 @@ int removeLazerFromList(LazerList* lazer, LazerList* list){
     //il faut retirer le premier de la liste
     if(*lazer == *list){
         *list=(*list)->next;
-        free(*lazer);
+        //free(*lazer);
         return 1;
     }
     //il faut supprimer celui qui n'est pas le premier
     if(*lazer==(*list)->next){
         (*list)->next=(*lazer)->next;
-        free(*lazer);
+        //free(*lazer);
         return 1;
     }
     return removeLazerFromList(lazer, &(*list)->next);
@@ -98,5 +100,49 @@ void freeLazers(LazerList* l){
         freeLazers(&tmpList);
     }else{
         l=NULL;
+        free(*l);
+    }
+}
+
+Block* allocBlock(float x, float y){
+    Block* b=(Block*) malloc(sizeof(Block));
+    if(!b){exit(1);}
+    b->x=x;
+    b->y=y;
+    b->next=NULL;
+    return b;
+}
+
+void addBlockToList(Block* block, BlockList* list){
+    if(*list == NULL){
+        *list = block;
+    }else{
+        addBlockToList(block, &(*list)->next);
+    }
+}
+
+int removeBlockFromList(BlockList* block, BlockList* list){
+    if(*list == NULL || *block == NULL) return 0;
+    if(*block == *list){
+        *list=(*list)->next;
+        free(*block);
+        return 1;
+    }
+    if(*block == (*list)->next){
+        (*list)->next=(*block)->next;
+        free(*block);
+        return 1;
+    }
+    return removeBlockFromList(block, &(*list)->next);
+}
+
+void freeAllBlock(BlockList* list){
+    if( (*list)->next != NULL){
+        BlockList tmpList=(*list)->next;
+        list=NULL;
+        freeAllBlock(&tmpList);
+    }else{
+        list=NULL;
+        //free(*list);
     }
 }

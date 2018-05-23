@@ -14,4 +14,6 @@ void drawShip(Ship* joueur);
 
 void drawLazer(Lazer* lazer);
 
+void drawBlock(Block* block);
+
 #endif

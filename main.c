@@ -8,34 +8,20 @@
 #include "structures.h"
 #include "draw.h"
 
-
 /*********************************************************************************  FONCTIONS  */
-
-void windowResize(int height, int width){
-    WINDOW_WIDTH=width;
-    WINDOW_HEIGHT=height;
-    printf("Globales: h:%d, w:%d\n",WINDOW_HEIGHT,WINDOW_WIDTH );
-    glViewport(0,0,WINDOW_WIDTH,WINDOW_HEIGHT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(-1.,1.,-1.,1.);
-    SDL_SetVideoMode(WINDOW_WIDTH,WINDOW_HEIGHT,BIT_PER_PIXEL,SDL_OPENGL | SDL_RESIZABLE);
-}
 
 //détercte si collision entre 2 bounding box
 int collision(int B1x, int B1y, int B2x, int B2y,
    int B3x, int B3y, int B4x, int B4y) {
-   if(B3x <= B1x <= B4x && B3y <= B1y <= B4y
-     || B3x <= B2x <= B4x && B3y <= B2y <= B4y) {
+   if(((B3x<=B1x && B1x<=B4x) && (B3y<=B1y && B1y<= B4y))||((B3x<=B2x && B2x<=B4x) && (B3y<=B2y && B2y<=B4y))){
      printf("Bbox 1 dans bbox2\n");
      return 1;
    }
-   if(Bx1 <= Bx3 <= Bx2 && By1 <= By3 <= By2
-     || Bx1 <= Bx4 <= Bx2 && By1 <= By4 <= By2) {
+   if( ((B1x<=B3x && B3x<=B2x) && (B1y<=B3y && B3y<=B2y)) || ((B1x<=B4x && B4x<=B2x) && (B1y<=B4y && B4y<= B2y))) {
      printf("Bbox2 dans bbox1\n");
      return 1;
    }
-   return 0
+   return 0;
 }
 
 void help(){
@@ -48,7 +34,7 @@ void help(){
     return;
 }
 /*********************************************************************************  MAIN  */
-int main(int argc, char** argv) {
+int main(/*int argc, char** argv*/) {
 
     /* Initialisation de la SDL */
     if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
@@ -76,6 +62,7 @@ int main(int argc, char** argv) {
 
     LazerList lazers=NULL;
     ShipList foes=NULL;
+    BlockList obstacles=NULL;
 
 
     int posYmax=37; //pour l'instant fait à l'oeuil (il faudrait trouver le moyen de le calculer)
@@ -88,8 +75,11 @@ int main(int argc, char** argv) {
     int loop = 1;
 
     /*Test*/
-    addShipToList(allocShip(0,0,1,5,5,40),&foes);
+    addShipToList(allocShip(30,0,1,5,5,40),&foes);
     addShipToList(allocShip(0,20,1,5,5,40),&foes);
+    addShipToList(allocShip(90,20,1,5,5,40),&foes);
+
+    addBlockToList(allocBlock(0,25), &obstacles);
     /*Test*/
     while(loop) {
 
@@ -99,7 +89,7 @@ int main(int argc, char** argv) {
         /* Placer ici le code de dessin */
         glClear(GL_COLOR_BUFFER_BIT);
         drawShip(joueur);
-        //************************************************************************************opérations à faire sur tous les lazers*/
+        /************************************************************************************opérations à faire sur tous les lazers*/
         LazerList tmpLazer = lazers;
         while(tmpLazer!=NULL){
             tmpLazer->x+=tmpLazer->speed; //déplacer le lazer
@@ -116,23 +106,41 @@ int main(int argc, char** argv) {
 
             tmpLazer=tmpLazer->next;
         }
-        //************************************************************************************opérations à faire sur tous les Enemis*/
+        /************************************************************************************opérations à faire sur tous les Enemis*/
         ShipList tmpShip=foes;
         while(tmpShip!=NULL){
             tmpShip->x-=scrollSpeed;
-
-            //vérifier si le vaiseau est tjrs dans l'écran
-            if(tmpShip->x>=(WINDOW_WIDTH*0.06) || tmpShip->x<(WINDOW_WIDTH*-0.06)){
+            //vérifier que le vaiseau n'a pas traversé l'écran
+            if(tmpShip->x<(WINDOW_WIDTH*-0.06)){
+                printf("removeShip.\n");
                 removeShipFromList(&tmpShip,&foes);
                 tmpShip=tmpShip->next;
                 continue;
             }
-            drawShip(tmpShip);
-            if(loop%tmpShip->fireRate==0){
-                printf("tirer\n");
+            //déssiner le vaiseau s'il est dans l'écran
+            if(tmpShip->x<=(WINDOW_WIDTH*0.06)){
+                drawShip(tmpShip);
+                //TO DO: faire tirer l'énemi
+            }
+            tmpShip=tmpShip->next;
+        }
+        /************************************************************************************opérations à faire sur tous les Obstacles*/
+        BlockList tmpBlock=obstacles;
+        while(tmpBlock!=NULL){
+            tmpBlock->x-=scrollSpeed;
+
+            if(tmpBlock->x<(WINDOW_WIDTH*-0.06)){
+                printf("removeBlock.\n");
+                removeBlockFromList(&tmpBlock, &obstacles);
+                tmpBlock=tmpBlock->next;
+                continue;
+            }
+            //dessiner le block s'il est dans l'écran
+            if(tmpBlock->x<=(WINDOW_WIDTH*0.06)){
+                drawBlock(tmpBlock);
             }
 
-            tmpShip=tmpShip->next;
+            tmpBlock=tmpBlock->next;
         }
 
         /* Boucle traitant les evenements */
@@ -214,9 +222,7 @@ int main(int argc, char** argv) {
 
                 /* Redimentionnement de la fenetre */
                 case SDL_VIDEORESIZE:
-                    printf("window resize\n");
-                    //printf("Nouvelle taille: h:%d, w:%d\n",e.resize.h,e.resize.w);
-                    windowResize(e.resize.h,e.resize.w);
+                    printf("Vous ne pouver pas changer la taille de la fenetre\n");
                     break;
 
                 default:
@@ -259,6 +265,12 @@ int main(int argc, char** argv) {
         freeShipList(&foes);
     }else{
         printf("(pas d'énemis à libérer.)\n");
+    }
+    printf("- Liberation des block\n");
+    if(obstacles !=NULL){
+        freeAllBlock(&obstacles);
+    }else{
+        printf("(pas de block à libérer)\n");
     }
     /* Liberation des ressources associées à la SDL */
     SDL_Quit();

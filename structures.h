@@ -25,20 +25,24 @@ typedef struct Lazer {
     struct Lazer* next;
 } Lazer, *LazerList;
 
+typedef struct Block{
+    float x,y;
+    struct Block* next;
+}Block, *BlockList;
+
 Ship * allocShip(float x, float y, int hpMax, int width, int height, int fireRate);
-
 void addShipToList(Ship * ship, ShipList * list);
-
 void freeShipList(ShipList * list);
-
 int removeShipFromList(ShipList * ship, ShipList * list);
 
 Lazer * allocLazer(float x, float y, float speed, unsigned char r, unsigned char g, unsigned char b);
-
 void addLazerToList(Lazer * lazer, LazerList * list);
-
 int removeLazerFromList(LazerList * lazer, LazerList * list);
-
 void freeLazers(LazerList * list);
+
+Block* allocBlock(float x, float y);
+void addBlockToList(Block* block, BlockList* list);
+int removeBlockFromList(BlockList* block, BlockList* list);
+void freeAllBlock(BlockList* list);
 
 #endif
