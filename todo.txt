@@ -1,16 +1,18 @@
 Base:
--Ajout de BB sur Lazer 				X
--merge vitesse et dirrection 		X
--Free Lazer 						X (dans remooveLazer)
--Free all Lazers 					
--Free all Ship
+-Ajout de BB sur Lazer 			X
+-merge vitesse et direction 		X
+-Free Lazer 				X (dans remooveLazer)
+-Free all Lazers 			X		
+-Free all Ship				X
 -Détecter une collision entre 2 BB
--Tir en raffale du joueur
--Bonnus (PV, Vitesse, Force ...)
--découper + Makefile
+-Tir en raffale du joueur	
+-Bonnus (PV, Vitesse, Force ...)	
+-découper + Makefile			X
 
 2eme phase:
--Sprites							X
+-Sprites				X
 -Texturing
+- touche on/off pour les sprites
 -lecture des niveau
 -génération de niveau
+- écran s de menu et game over
