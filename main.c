@@ -7,6 +7,7 @@
 #include "parameters.h"
 #include "structures.h"
 #include "draw.h"
+#include "level.h"
 
 /*********************************************************************************  FONCTIONS  */
 
@@ -70,10 +71,10 @@ int main(/*int argc, char** argv*/) {
 
     /* Initialisation*/
     //Lire le PPM pour connaitre la position de chaque énémi/obstache/bonnus et les metres dans les listes
-
+    loadLevel(&foes);
     /* Boucle d'affichage */
     int loop = 1;
-    
+
     while(loop) {
 
         /* Récupération du temps au début de la boucle */
