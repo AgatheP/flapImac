@@ -153,10 +153,14 @@ int main() {
             if(tmpShip->x<=(WINDOW_WIDTH*0.04)){
                 drawShip(tmpShip, textures[1]);
                 if(loop % (tmpShip->fireRate)==0){
-                    addLazerToList(allocLazer(tmpShip->x, tmpShip->y, -0.7, 255, 0, 0), &lazers);
+                    addLazerToList(allocLazer(tmpShip->x, tmpShip->y, -0.7 -scrollSpeed, 255, 0, 0), &lazers);
                 }
             }
             tmpShip=tmpShip->next;
+        }
+        if(foes == NULL) {
+          printf("Il n'y a plus d'ennemis !\n");
+          partieStatus = 1;
         }
         /************************************************************************************opérations à faire sur tous les Obstacles*/
         BlockList tmpBlock=obstacles;
@@ -316,7 +320,7 @@ int main() {
 
                         case SDLK_SPACE:
                             printf("*** SPACE ***\n");
-                            addLazerToList(allocLazer(joueur->x,joueur->y,1,0,255,0),&lazers);
+                            addLazerToList(allocLazer(joueur->x,joueur->y,1 + scrollSpeed,0,255,0),&lazers);
                             break;
                         case SDLK_i:
                             printf("*** INFO JOUEUR***\n");
