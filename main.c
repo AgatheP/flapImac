@@ -103,6 +103,9 @@ int main() {
     int loop = 1;
 
     while(loop) {
+      if(partieStatus!=0){ //on vérifit si on doit continuer la partie
+          break;
+      }
         loop+=1;
         /* Récupération du temps au début de la boucle */
         Uint32 startTime = SDL_GetTicks();
@@ -165,9 +168,11 @@ int main() {
             if(tmpBlock->x<=(WINDOW_WIDTH*0.04)){
                 //dessin du block
                 drawBlock(tmpBlock, textures[4]);
+                float helpPlayer = 1.2; //prevents player from colliding with blocks too soon
                 //détecter la collision avec le joueur avec les block dans la seconde patie de l'écran pour faire mois de calculs
                 if(tmpBlock->x < -50){
-                    if(collision(joueur->x+joueur->Bx, joueur->y+joueur->By,joueur->x-joueur->Bx, joueur->y-joueur->By,
+                    if(collision(joueur->x+joueur->Bx - helpPlayer, joueur->y+joueur->By - helpPlayer,joueur->x-joueur->Bx - helpPlayer,
+                      joueur->y-joueur->By - helpPlayer,
                         tmpBlock->x+BBBlock, tmpBlock->y+BBBlock, tmpBlock->x-BBBlock, tmpBlock->y-BBBlock)){
                         printf("Ouch! tu t'es pris un mur!\n");
                         partieStatus=-1;
@@ -219,9 +224,6 @@ int main() {
             tmpLazer=tmpLazer->next;
         }
 
-        if(partieStatus!=0){ //on vérifit si on doit continuer la partie
-            break;
-        }
         /* Boucle traitant les evenements */
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
