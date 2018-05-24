@@ -25,4 +25,6 @@ void drawBackground(GLuint texture);
 
 void drawEndScreen(GLuint texture);
 
+void drawHeart(GLuint texture, float x, float y);
+
 #endif

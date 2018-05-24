@@ -69,7 +69,7 @@ int main() {
     /* Titre de la fenêtre */
     SDL_WM_SetCaption("Flapimac", NULL);
 
-    GLuint textures[8];
+    GLuint textures[9];
     textures[0] = loadTexture(spaceshipTex);
     textures[1] = loadTexture(foeTex);
     textures[2] = loadTexture(bulletTex);
@@ -78,6 +78,7 @@ int main() {
     textures[5] = loadTexture(background);
     textures[6] = loadTexture(gameOver);
     textures[7] = loadTexture(victory);
+    textures[8] = loadTexture(heart);
 
 
     int mooveUp=0;
@@ -212,6 +213,11 @@ int main() {
             }
             tmpBuff=tmpBuff->next;
         }
+
+        //displays number of hp left
+                for(int i = 0; i < joueur->hp; i++) {
+                  drawHeart(textures[8], -0.9+(float)i/15, 0.9);
+                }
 
 
         /************************************************************************Gestion de collisions*/
@@ -390,7 +396,7 @@ int main() {
 
     printf("- Liberation des textures\n");
 
-    glDeleteTextures(8, &textures);
+    glDeleteTextures(9, &textures);
 
     /* Liberation des ressources associées à la SDL */
     SDL_Quit();
