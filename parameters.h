@@ -29,5 +29,6 @@ static char* bulletTex = "Sprites/Bullet.png";
 static char* bulletFoeTex = "Sprites/BulletFoe.png";
 static char* blockTex = "Sprites/Block.png";
 static char* background = "Sprites/back2.jpg";
+static char* heart = "Sprites/heart.png";
 
 #endif

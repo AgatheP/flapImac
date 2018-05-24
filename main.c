@@ -76,6 +76,7 @@ int main() {
     textures[3] = loadTexture(bulletFoeTex);
     textures[4] = loadTexture(blockTex);
     textures[5] = loadTexture(background);
+    textures[6] = loadTexture(heart);
 
 
     int mooveUp=0;
@@ -178,6 +179,11 @@ int main() {
                         partieStatus=-1;
                     }
                 }
+                //displays number of hp left
+                for(int i = 0; i < joueur->hp; i++) {
+                  drawHeart(textures[6], -0.9+(float)i/15, 0.9);
+                }
+
                 //Détection des collistions de lazers
                 tmpLazer=lazers;
                 while(tmpLazer!=NULL){
@@ -361,7 +367,7 @@ int main() {
         printf("(pas de block à libérer)\n");
     }
     printf("- Liberation des textures\n");
-    glDeleteTextures(6, &textures);
+    glDeleteTextures(7, &textures);
     /* Liberation des ressources associées à la SDL */
     SDL_Quit();
 

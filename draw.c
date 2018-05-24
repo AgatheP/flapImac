@@ -185,3 +185,28 @@ void drawBackground(GLuint texture){
     glPopMatrix();
     return;
 }
+
+void drawHeart(GLuint texture, float x, float y) {
+  glPushMatrix();
+      glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, texture);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+      glBegin(GL_QUADS);
+          glColor3ub(255,255,255);
+          glTexCoord2f(1, 0);
+          glVertex2f(x+0.03, y+0.03);
+          glTexCoord2f(1, 1);
+          glVertex2f(x+0.03, y-0.03);
+          glTexCoord2f(0, 1);
+          glVertex2f(x-0.03, y-0.03);
+          glTexCoord2f(0, 0);
+          glVertex2f(x-0.03, y+0.03);
+      glEnd();
+
+      glDisable(GL_TEXTURE_2D); //désactive le texturing
+      glBindTexture(GL_TEXTURE_2D, 0); //debind la texture
+
+  glPopMatrix();
+  return;
+}
