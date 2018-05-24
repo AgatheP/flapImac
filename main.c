@@ -68,14 +68,24 @@ int main() {
 
     /* Titre de la fenêtre */
     SDL_WM_SetCaption("Flapimac", NULL);
+
+    GLuint textures[5];
+    textures[0] = loadTexture(spaceshipTex);
+    textures[1] = loadTexture(foeTex);
+    textures[2] = loadTexture(bulletTex);
+    textures[3] = loadTexture(bulletFoeTex);
+    textures[4] = loadTexture(blockTex);
+    textures[5] = loadTexture(background);
+
+
     int mooveUp=0;
     int mooveDown=0;
 
 
     //Initialisation du joueur
-    int shipHeight = 5;
+    int shipHeight = 8;
     Ship* joueur=allocShip(-60,0,10,7,shipHeight,50);
-    int speedJoueur=1;
+    int speedJoueur=2;
 
     LazerList lazers=NULL;
     ShipList foes=NULL;
@@ -99,7 +109,8 @@ int main() {
 
         /* Placer ici le code de dessin */
         glClear(GL_COLOR_BUFFER_BIT);
-        drawShip(joueur);
+        drawBackground(textures[5]);
+        drawShip(joueur, textures[0]);
         /************************************************************************************opérations à faire sur tous les lazers*/
         LazerList tmpLazer = lazers;
         while(tmpLazer!=NULL){
@@ -112,7 +123,9 @@ int main() {
                 continue;
             }
             //dessiner le lazer
-            drawLazer(tmpLazer);
+            if(tmpLazer->speed > 0)
+              drawLazer(tmpLazer, textures[2]);
+            else drawLazer(tmpLazer, textures[3]);
             //chercher si le lazer est entré en collistion avec quelquechose
 
             tmpLazer=tmpLazer->next;
@@ -130,7 +143,7 @@ int main() {
             }
             //déssiner le vaiseau s'il est dans l'écran
             if(tmpShip->x<=(WINDOW_WIDTH*0.04)){
-                drawShip(tmpShip);
+                drawShip(tmpShip, textures[1]);
                 if(loop % (tmpShip->fireRate)==0){
                     addLazerToList(allocLazer(tmpShip->x, tmpShip->y, -0.7, 255, 0, 0), &lazers);
                 }
@@ -151,10 +164,10 @@ int main() {
             //si le block est dans l'écran
             if(tmpBlock->x<=(WINDOW_WIDTH*0.04)){
                 //dessin du block
-                drawBlock(tmpBlock);
+                drawBlock(tmpBlock, textures[4]);
                 //détecter la collision avec le joueur avec les block dans la seconde patie de l'écran pour faire mois de calculs
                 if(tmpBlock->x < -50){
-                    if(collision(joueur->x+joueur->Bx, joueur->y+joueur->By,joueur->x-joueur->Bx, joueur->y-joueur->By, 
+                    if(collision(joueur->x+joueur->Bx, joueur->y+joueur->By,joueur->x-joueur->Bx, joueur->y-joueur->By,
                         tmpBlock->x+BBBlock, tmpBlock->y+BBBlock, tmpBlock->x-BBBlock, tmpBlock->y-BBBlock)){
                         printf("Ouch! tu t'es pris un mur!\n");
                         partieStatus=-1;
@@ -323,7 +336,7 @@ int main() {
     }else{
         printf("perdu\n");
     }
-    
+
     printf("Libération de la mémoire:\n");
     printf("- Libération joueur\n");
     free(joueur);
@@ -345,6 +358,8 @@ int main() {
     }else{
         printf("(pas de block à libérer)\n");
     }
+    printf("- Liberation des textures\n");
+    glDeleteTextures(6, &textures);
     /* Liberation des ressources associées à la SDL */
     SDL_Quit();
 

@@ -8,7 +8,7 @@ endif
 
 CC=gcc
 CFLAGS= -W -Wall
-LDFLAGS= -lSDL -lGLU -lGL -lm
+LDFLAGS= -lSDL -lGLU -lGL -lm -lSDL_image
 EXEC=main
 SRC= $(wildcard *.c)
 OBJ= $(SRC:.c=.o)

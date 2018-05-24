@@ -39,7 +39,7 @@ void loadLevel(ShipList *foes, BlockList *obstacles) {
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 255 && tab[i][j][2] == 0) {
         //vert, ajouter un ennemi
-        addShipToList(allocShip(posX, posY,1,5,5,80), foes);
+        addShipToList(allocShip(posX, posY,1,7,7,80), foes);
         printf("Ennemi chargé\n");
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 0 && tab[i][j][2] == 255) {
