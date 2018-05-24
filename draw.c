@@ -137,13 +137,22 @@ void drawBlock(Block* block, GLuint texture){
 void selectDrawBuff(Buff* buff){
     switch(buff->type){
         case 0:
-            //rien à dessiner
+            //fin de niveau
+            drawBuff(buff, 255, 255, 255);
             return;
-        default:
-            drawBuff(buff);
+        case 1:
+        case 2:
+            //buff positif
+            drawBuff(buff, 0,255,0);
+            return;
+        case -1:
+        case -2:
+            //buff negatif
+            drawBuff(buff, 255,0,0);
+            return;
     }
 }
-void drawBuff(Buff* buff){
+void drawBuff(Buff* buff, int r, int g, int b){
     glPointSize(10);
     glPushMatrix();
         glScalef(0.015,0.025,0);
@@ -151,7 +160,7 @@ void drawBuff(Buff* buff){
         glEnd();
 
         glBegin(GL_QUADS);
-            glColor3ub(255,255,255);
+            glColor3ub(r,g,b);
             glVertex2f(BBBuff, BBBuff);
             glVertex2f(BBBuff, -BBBuff);
             glVertex2f(-BBBuff, -BBBuff);

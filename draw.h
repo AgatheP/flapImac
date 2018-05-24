@@ -18,8 +18,9 @@ void drawShip(Ship* joueur, GLuint texture);
 void drawLazer(Lazer* lazer, GLuint texture);
 
 void drawBlock(Block* block, GLuint texture);
+
 void selectDrawBuff(Buff* buff);
-void drawBuff(Buff* buff);
+void drawBuff(Buff* buff, int r, int g, int b);
 
 void drawBackground(GLuint texture);
 

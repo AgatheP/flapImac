@@ -9,6 +9,8 @@
 #include "level.h"
 #include "parameters.h"
 
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
 /*********************************************************************************  FONCTIONS  */
 
 //détercte si collision entre 2 bounding box
@@ -48,6 +50,7 @@ void tailleVirtuelle() {
   glLoadIdentity();
   gluOrtho2D(-1., 1., -1., 1.);
 }
+
 /*********************************************************************************  MAIN  */
 int main() {
 
@@ -102,6 +105,11 @@ int main() {
     int partieStatus=0; /* 0= normal, 1=victoire, -1= game over*/
     //Lire le PPM pour connaitre la position de chaque énémi/obstache/bonnus et les metres dans les listes
     loadLevel(&foes, &obstacles);
+
+    //TEST
+    addBuffToList(allocBuff(-30,0,1), &buffs);
+    addBuffToList(allocBuff(-40,0,-2), &buffs);
+
     /* Boucle d'affichage */
     int loop = 1;
 
@@ -200,7 +208,6 @@ int main() {
             tmpBuff->x -= scrollSpeed;
             //le buff sort de l'écrant
             if(tmpBuff->x < WINDOW_WIDTH*-0.04){
-                printf("removeBuff\n");
                 removeBuffFromList(&tmpBuff, &buffs);
                 tmpBuff=tmpBuff->next;
                 continue;
@@ -208,7 +215,34 @@ int main() {
             //traitement si dans l'écran
             if(tmpBuff->x <= WINDOW_WIDTH*0.04){
                 selectDrawBuff(tmpBuff);
-                //TO DO: gestion collision avec le joueur
+                if(collision(joueur->x+joueur->Bx, joueur->y+joueur->By,joueur->x-joueur->Bx, joueur->y-joueur->By,
+			tmpBuff->x+BBBuff, tmpBuff->y+BBBuff,tmpBuff->x-BBBuff, tmpBuff->y-BBBuff)){
+                    printf("Collision avec un buff de type: %d\n", tmpBuff->type);
+                    switch(tmpBuff->type){
+                        case 0:
+                            printf("Buff fin de niveau\n");
+                            partieStatus=1;
+                            break;
+                        case 1:
+                            printf("Buff: accélération\n");
+                            speedJoueur+=2;
+                            break;
+                        case -1:
+                            printf("Buff: ralentissement\n");
+                            speedJoueur=MAX(2,speedJoueur-2);
+                            break;
+                        case 2:
+                            printf("Buff: vie en plus\n");
+                            joueur->hp=MIN(joueur->hpMax, joueur->hp+1);
+                            break;
+                        case -2:
+                            printf("Buff: vie en moins\n");
+                            joueur->hp-=1;
+                            if(joueur->hp<=0) partieStatus=-1;
+                            break;
+                    }
+                    removeBuffFromList(&tmpBuff, &buffs);
+                }
             }
             tmpBuff=tmpBuff->next;
         }
@@ -337,10 +371,10 @@ int main() {
         // Deplacer le joueur sauf s'il apuis sur les 2 flèches en même temps
         if(mooveUp==0 ||mooveDown==0){
             if(mooveUp && joueur->y<posYmax){
-                joueur->y+=speedJoueur;
+                joueur->y=MIN(posYmax, joueur->y+speedJoueur);
             }
             if(mooveDown && joueur->y>posYmin){
-                joueur->y-=speedJoueur;
+                joueur->y=MAX(joueur->y-speedJoueur,posYmin);
             }
         }
 
