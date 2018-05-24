@@ -10,13 +10,13 @@ void loadLevel(ShipList *foes, BlockList *obstacles) {
   int tab[10][100][3];
   char line[3];
 
-  /*vérifie et ouvre le fichier FILE_NAME*/
 	FILE* file = fopen(FILE_NAME,"r");
 	if(file == NULL) {
-		printf("ERREUR: le fichier n'a pas pu être ouvert, vérifiez le chemin ou les droits d'accès.\n");
+		printf("ERROR : the file couldn't be loaded.\n");
 		exit(EXIT_FAILURE);
 	}
-  //lis le fichier et rempli tableau avec valeurs rgb pixels
+
+  //reads PPM file and fills array with its values
   for(int i=0; i < 3; i++) {
     fgets(line, 10, file);
   }
@@ -27,24 +27,22 @@ void loadLevel(ShipList *foes, BlockList *obstacles) {
       }
     }
   }
-  //crée et place block, ennemis et bonus aux coordonnées correspondantes
+  //creates et places blocks, ennemies and buffs
   for(int i = 0; i < 10; i++) {
     for(int j = 0; j < 100; j++) {
       int posX = j*playableHeight/10;
       int posY = -i*playableHeight/10 + playableHeight/2.2;
       if(tab[i][j][0] == 255 && tab[i][j][1] == 0 && tab[i][j][2] == 0) {
-        //rouge, ajouter un block
+        //red, add block
         addBlockToList(allocBlock(posX, posY), obstacles);
-        printf("Block chargé\n");
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 255 && tab[i][j][2] == 0) {
-        //vert, ajouter un ennemi
+        //green, add enemy
         addShipToList(allocShip(posX, posY,1,7,7,80), foes);
-        printf("Ennemi chargé\n");
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 0 && tab[i][j][2] == 255) {
-        //bleu, ajouter un bonus
-        printf("Bonus chargé\n");
+        //blue. We know how to load and interact with different types of buffs
+        //(end of level, speed boost...) but a bug prevented us from using them.
       }
     }
   }

@@ -4,21 +4,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/* Dimensions de la fenêtre */
+/* Window dimensions */
 static unsigned int WINDOW_WIDTH = 1800;
 static unsigned int WINDOW_HEIGHT = 950;
 
-/* Nombre de bits par pixel de la fenêtre */
 static const unsigned int BIT_PER_PIXEL = 32;
 
-/* Nombre minimal de millisecondes separant le rendu de deux images */
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
-//Bounding box fixes
+
+//fixed bounding boxes
 static float BBLazer = 2;
 static int BBBlock= 4;
 static float BBBuff=3.5;
 
-static float scrollSpeed = 0.80; //vitesse de déplacement horizontal du jeu
+static float scrollSpeed = 0.80; //speed of level scrolling
 static int playableHeight = 80;
 static int PPMHeight = 10;
 static int PPMWidth = 100;

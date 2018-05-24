@@ -1,14 +1,13 @@
 #include "structures.h"
 
 Ship* allocShip(float x,float y, int hpMax, int width, int height, int fireRate){
-    //créer le joueur et le placer au milieu de la hauteur de l'écrant
     Ship* p=(Ship*) malloc(sizeof(Ship));
     if(!p){exit(1);}
     p->hpMax=hpMax;
     p->hp=hpMax;
     p->y=y;
     p->x=x;
-    //création de la bounding box
+    //creates bbox
     p->Bx=(float)width/2.0;
     p->By=(float)height/2.0;
     p->fireRate=fireRate;
@@ -37,7 +36,6 @@ void freeShipList(ShipList* l){
 
 int removeShipFromList(ShipList* ship, ShipList* list){
     if(*list==NULL || *ship==NULL) return 0;
-    //s'il s'agit du premier de la liste
     if(*ship == *list){
         *list=(*list)->next;
         ship=NULL;
