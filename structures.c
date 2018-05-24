@@ -28,10 +28,10 @@ void freeShipList(ShipList* l){
     if((*l)->next!=NULL){
         freeShipList(&(*l)->next);
         l=NULL;
-        //free(l);
+        free(l);
     }else{
         l=NULL;
-        //free(l);
+        free(l);
     }
 }
 
@@ -41,13 +41,13 @@ int removeShipFromList(ShipList* ship, ShipList* list){
     if(*ship == *list){
         *list=(*list)->next;
         ship=NULL;
-        //free(*ship);
+        free(*ship);
         return 1;
     }
     if(*ship == (*list)->next){
-        (*list)->next=(*ship)->next;
+        (*list)->next=(*list)->next->next;
         ship=NULL;
-        //free(*ship);
+        free(ship);
         return 1;
     }
     return removeShipFromList(ship,&(*list)->next);
@@ -81,13 +81,13 @@ int removeLazerFromList(LazerList* lazer, LazerList* list){
     //il faut retirer le premier de la liste
     if(*lazer == *list){
         *list=(*list)->next;
-        //free(*lazer);
+        free(*lazer);
         return 1;
     }
     //il faut supprimer celui qui n'est pas le premier
     if(*lazer==(*list)->next){
         (*list)->next=(*lazer)->next;
-        //free(*lazer);
+        free(*lazer);
         return 1;
     }
     return removeLazerFromList(lazer, &(*list)->next);
@@ -95,12 +95,12 @@ int removeLazerFromList(LazerList* lazer, LazerList* list){
 
 void freeLazers(LazerList* l){
     if((*l)->next!=NULL){
-        LazerList tmpList=(*l)->next;
+        freeLazers(&(*l)->next);
         l=NULL;
-        freeLazers(&tmpList);
+        free(l);
     }else{
         l=NULL;
-        //free(*l);
+        //free(l);
     }
 }
 
@@ -129,7 +129,7 @@ int removeBlockFromList(BlockList* block, BlockList* list){
         return 1;
     }
     if(*block == (*list)->next){
-        (*list)->next=(*block)->next;
+        (*list)->next=(*list)->next->next;
         free(*block);
         return 1;
     }
@@ -138,9 +138,9 @@ int removeBlockFromList(BlockList* block, BlockList* list){
 
 void freeAllBlock(BlockList* list){
     if( (*list)->next != NULL){
-        BlockList tmpList=(*list)->next;
+        freeAllBlock(&(*list)->next);
         list=NULL;
-        freeAllBlock(&tmpList);
+        free(list);
     }else{
         list=NULL;
         //free(*list);
