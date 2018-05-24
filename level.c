@@ -11,7 +11,7 @@ void loadLevel(ShipList *foes, BlockList *obstacles) {
   char line[3];
 
   /*vérifie et ouvre le fichier FILE_NAME*/
-	FILE* file = fopen("Levels/niveau.ppm","r");
+	FILE* file = fopen(FILE_NAME,"r");
 	if(file == NULL) {
 		printf("ERREUR: le fichier n'a pas pu être ouvert, vérifiez le chemin ou les droits d'accès.\n");
 		exit(EXIT_FAILURE);
@@ -31,7 +31,7 @@ void loadLevel(ShipList *foes, BlockList *obstacles) {
   for(int i = 0; i < 10; i++) {
     for(int j = 0; j < 100; j++) {
       int posX = j*playableHeight/10;
-      int posY = -i*playableHeight/10 + playableHeight/2;
+      int posY = -i*playableHeight/10 + playableHeight/2.2;
       if(tab[i][j][0] == 255 && tab[i][j][1] == 0 && tab[i][j][2] == 0) {
         //rouge, ajouter un block
         addBlockToList(allocBlock(posX, posY), obstacles);
@@ -39,7 +39,7 @@ void loadLevel(ShipList *foes, BlockList *obstacles) {
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 255 && tab[i][j][2] == 0) {
         //vert, ajouter un ennemi
-        addShipToList(allocShip(posX,posY,1,5,5,40), foes);
+        addShipToList(allocShip(posX, posY,1,5,5,80), foes);
         printf("Ennemi chargé\n");
       }
       if(tab[i][j][0] == 0 && tab[i][j][1] == 0 && tab[i][j][2] == 255) {

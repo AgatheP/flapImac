@@ -13,11 +13,12 @@ static const unsigned int BIT_PER_PIXEL = 32;
 
 /* Nombre minimal de millisecondes separant le rendu de deux images */
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
-static float BBLazer = 2; //La bounding box des lazers est carré et on ne donne que la moitiée du côté
+static float BBLazer = 2;
+static int BBBlock= 4; //La bounding box des lazers est carré et on ne donne que la moitiée du côté
 static float scrollSpeed = 0.20; //vitesse de déplacement horizontal du jeu
 static int playableHeight = 80;
 static int PPMHeight = 10;
 static int PPMWidth = 100;
-//const char * FILE_NAME = "Levels/niveau.ppm";
+static char * FILE_NAME = "Levels/niveau.ppm";
 
 #endif

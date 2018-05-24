@@ -42,7 +42,7 @@ void tailleVirtuelle() {
   gluOrtho2D(-1., 1., -1., 1.);
 }
 /*********************************************************************************  MAIN  */
-int main(/*int argc, char** argv*/) {
+int main() {
 
     /* Initialisation de la SDL */
     if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
@@ -124,15 +124,15 @@ int main(/*int argc, char** argv*/) {
             if(tmpShip->x<=(WINDOW_WIDTH*0.04)){
                 drawShip(tmpShip);
                 if(loop % (tmpShip->fireRate)==0){
-                    addLazerToList(allocLazer(tmpShip->x, tmpShip->y, -0.7, 255,0,0), &lazers);
+                    addLazerToList(allocLazer(tmpShip->x, tmpShip->y, -0.7, 255, 0, 0), &lazers);
                 }
             }
             tmpShip=tmpShip->next;
         }
         /************************************************************************************opérations à faire sur tous les Obstacles*/
         BlockList tmpBlock=obstacles;
-        while(tmpBlock!=NULL){
-            tmpBlock->x-=scrollSpeed;
+        while(tmpBlock != NULL){
+            tmpBlock->x -= scrollSpeed;
 
             if(tmpBlock->x<(WINDOW_WIDTH*-0.04)){
                 printf("removeBlock.\n");

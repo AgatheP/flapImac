@@ -60,10 +60,10 @@ void drawBlock(Block* block){
         glEnd();
         glBegin(GL_LINE_LOOP);
             glColor3ub(255,120,0);
-            glVertex2f(+5, +5);
-            glVertex2f(+5, -5);
-            glVertex2f(-5, -5);
-            glVertex2f(-5, +5);
+            glVertex2f(BBBlock, BBBlock);
+            glVertex2f(BBBlock, -BBBlock);
+            glVertex2f(-BBBlock, -BBBlock);
+            glVertex2f(-BBBlock, BBBlock);
         glEnd();
     glPopMatrix();
     return;
