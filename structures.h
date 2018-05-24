@@ -32,7 +32,7 @@ typedef struct Block{
 
 typedef struct Buff{
     float x, y;
-    int type;
+    int type; //0 : fin de niveau, >0 bonus, <0 malus : -1 vitesse plus lente, 1 vitesse plus rapide, -2 une vie en moins, 2 une vie en plus
     struct Buff* next;
 }Buff, *BuffList;
 
@@ -50,5 +50,10 @@ Block* allocBlock(float x, float y);
 void addBlockToList(Block* block, BlockList* list);
 int removeBlockFromList(BlockList* block, BlockList* list);
 void freeAllBlock(BlockList* list);
+
+Buff* allocBuff(float x, float y, int type);
+void addBuffToList(Buff *buff, BuffList *list);
+int removeBuffFromList(BuffList* buff, BuffList* list);
+void freeBuffs(BuffList* list);
 
 #endif
