@@ -69,13 +69,15 @@ int main() {
     /* Titre de la fenêtre */
     SDL_WM_SetCaption("Flapimac", NULL);
 
-    GLuint textures[5];
+    GLuint textures[8];
     textures[0] = loadTexture(spaceshipTex);
     textures[1] = loadTexture(foeTex);
     textures[2] = loadTexture(bulletTex);
     textures[3] = loadTexture(bulletFoeTex);
     textures[4] = loadTexture(blockTex);
     textures[5] = loadTexture(background);
+    textures[6] = loadTexture(gameOver);
+    textures[7] = loadTexture(victory);
 
 
     int mooveUp=0;
@@ -176,6 +178,7 @@ int main() {
                       joueur->y-joueur->By - helpPlayer,
                         tmpBlock->x+BBBlock, tmpBlock->y+BBBlock, tmpBlock->x-BBBlock, tmpBlock->y-BBBlock)){
                         printf("Ouch! tu t'es pris un mur!\n");
+                        drawEndScreen(textures[6]);
                         partieStatus=-1;
                     }
                 }
@@ -354,11 +357,6 @@ int main() {
 
     }
     /*FIN du jeu*/
-    if(partieStatus == 1){
-        printf("victoire\n");
-    }else{
-        printf("perdu\n");
-    }
 
     printf("Libération de la mémoire:\n");
     printf("- Libération joueur\n");
@@ -369,7 +367,7 @@ int main() {
     }else{
         printf("(pas de lazers à supprimer)\n");
     }
-    printf("- Liberation des énémis\n");
+    printf("- Liberation des ennemis\n");
     if(foes != NULL){
         freeShipList(&foes);
     }else{
@@ -381,8 +379,19 @@ int main() {
     }else{
         printf("(pas de block à libérer)\n");
     }
+
+    if(partieStatus == 1){
+        printf("victoire\n");
+        drawEndScreen(textures[7]);
+    }else{
+        printf("perdu\n");
+        drawEndScreen(textures[6]);
+    }
+
     printf("- Liberation des textures\n");
-    glDeleteTextures(6, &textures);
+
+    glDeleteTextures(8, &textures);
+
     /* Liberation des ressources associées à la SDL */
     SDL_Quit();
 

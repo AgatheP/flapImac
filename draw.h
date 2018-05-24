@@ -23,4 +23,6 @@ void drawBuff(Buff* buff);
 
 void drawBackground(GLuint texture);
 
+void drawEndScreen(GLuint texture);
+
 #endif

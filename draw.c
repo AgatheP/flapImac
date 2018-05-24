@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL/SDL_image.h>
 
 #include "draw.h"
 
@@ -165,7 +164,31 @@ void drawBackground(GLuint texture){
     glPushMatrix();
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glBegin(GL_QUADS);
+            glColor3ub(255,255,255);
+            glTexCoord2f(1, 0);
+            glVertex2f(2, 2);
+            glTexCoord2f(1, 1);
+            glVertex2f(2, -2);
+            glTexCoord2f(0, 1);
+            glVertex2f(-2, -2);
+            glTexCoord2f(0, 0);
+            glVertex2f(-2, 2);
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D); //désactive le texturing
+        glBindTexture(GL_TEXTURE_2D, 0); //debind la texture
+
+    glPopMatrix();
+    return;
+}
+
+void drawEndScreen(GLuint texture){
+    glPushMatrix();
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texture);
 
         glBegin(GL_QUADS);
             glColor3ub(255,255,255);

@@ -22,12 +22,14 @@ static float scrollSpeed = 0.40; //vitesse de déplacement horizontal du jeu
 static int playableHeight = 80;
 static int PPMHeight = 10;
 static int PPMWidth = 100;
-static char * FILE_NAME = "Levels/niveau.ppm";
+static char* FILE_NAME = "Levels/testBuff.ppm";
 static char* spaceshipTex = "Sprites/Spaceship.png";
 static char* foeTex = "Sprites/Foe.png";
 static char* bulletTex = "Sprites/Bullet.png";
 static char* bulletFoeTex = "Sprites/BulletFoe.png";
 static char* blockTex = "Sprites/Block.png";
-static char* background = "Sprites/back2.jpg";
+static char* background = "Sprites/back.jpg";
+static char* gameOver = "Sprites/gameOver.png";
+static char* victory = "Sprites/victory.png";
 
 #endif
