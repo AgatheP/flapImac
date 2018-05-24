@@ -18,7 +18,7 @@ static float BBLazer = 2;
 static int BBBlock= 4;
 static float BBBuff=3.5;
 
-static float scrollSpeed = 0.40; //vitesse de déplacement horizontal du jeu
+static float scrollSpeed = 0.80; //vitesse de déplacement horizontal du jeu
 static int playableHeight = 80;
 static int PPMHeight = 10;
 static int PPMWidth = 100;
@@ -29,8 +29,8 @@ static char* bulletTex = "Sprites/Bullet.png";
 static char* bulletFoeTex = "Sprites/BulletFoe.png";
 static char* blockTex = "Sprites/Block.png";
 static char* background = "Sprites/back.jpg";
+static char* heart = "Sprites/heart.png";
 static char* gameOver = "Sprites/gameOver.png";
 static char* victory = "Sprites/victory.png";
-static char* heart = "Sprites/heart.png";
 
 #endif

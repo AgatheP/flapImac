@@ -76,9 +76,10 @@ int main() {
     textures[3] = loadTexture(bulletFoeTex);
     textures[4] = loadTexture(blockTex);
     textures[5] = loadTexture(background);
-    textures[6] = loadTexture(gameOver);
-    textures[7] = loadTexture(victory);
-    textures[8] = loadTexture(heart);
+    textures[6] = loadTexture(heart);
+    textures[7] = loadTexture(gameOver);
+    textures[8] = loadTexture(victory);
+
 
 
     int mooveUp=0;
@@ -179,7 +180,6 @@ int main() {
                       joueur->y-joueur->By - helpPlayer,
                         tmpBlock->x+BBBlock, tmpBlock->y+BBBlock, tmpBlock->x-BBBlock, tmpBlock->y-BBBlock)){
                         printf("Ouch! tu t'es pris un mur!\n");
-                        drawEndScreen(textures[6]);
                         partieStatus=-1;
                     }
                 }
@@ -215,9 +215,11 @@ int main() {
         }
 
         //displays number of hp left
-                for(int i = 0; i < joueur->hp; i++) {
-                  drawHeart(textures[8], -0.9+(float)i/15, 0.9);
-                }
+        if(joueur->hp > 0) {
+          for(int i = 0; i < joueur->hp; i++) {
+            drawHeart(textures[6], -0.9+(float)i/15, 0.9);
+          }
+        }
 
 
         /************************************************************************Gestion de collisions*/
@@ -253,6 +255,16 @@ int main() {
             }
             tmpLazer=tmpLazer->next;
         }
+        if(partieStatus == 1){
+            printf("victoire\n");
+            drawEndScreen(textures[8]);
+            SDL_Delay(3000);
+        }
+        if(partieStatus == -1){
+            printf("perdu\n");
+            drawEndScreen(textures[7]);
+            SDL_Delay(3000);
+          }
 
         /* Boucle traitant les evenements */
         SDL_Event e;
@@ -364,6 +376,7 @@ int main() {
     }
     /*FIN du jeu*/
 
+
     printf("Libération de la mémoire:\n");
     printf("- Libération joueur\n");
     free(joueur);
@@ -386,17 +399,21 @@ int main() {
         printf("(pas de block à libérer)\n");
     }
 
+
     if(partieStatus == 1){
         printf("victoire\n");
-        drawEndScreen(textures[7]);
+        drawEndScreen(textures[8]);
+        SDL_Delay(3000);
     }else{
         printf("perdu\n");
-        drawEndScreen(textures[6]);
+        drawEndScreen(textures[7]);
+        SDL_Delay(3000);
     }
 
     printf("- Liberation des textures\n");
 
-    glDeleteTextures(9, &textures);
+
+    glDeleteTextures(9, textures);
 
     /* Liberation des ressources associées à la SDL */
     SDL_Quit();
