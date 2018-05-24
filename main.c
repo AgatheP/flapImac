@@ -12,17 +12,24 @@
 /*********************************************************************************  FONCTIONS  */
 
 //détercte si collision entre 2 bounding box
-int collision(int B1x, int B1y, int B2x, int B2y,
-   int B3x, int B3y, int B4x, int B4y) {
-   if(((B3x<=B1x && B1x<=B4x) && (B3y<=B1y && B1y<= B4y))||((B3x<=B2x && B2x<=B4x) && (B3y<=B2y && B2y<=B4y))){
-     printf("Bbox 1 dans bbox2\n");
-     return 1;
-   }
-   if( ((B1x<=B3x && B3x<=B2x) && (B1y<=B3y && B3y<=B2y)) || ((B1x<=B4x && B4x<=B2x) && (B1y<=B4y && B4y<= B2y))) {
-     printf("Bbox2 dans bbox1\n");
-     return 1;
-   }
-   return 0;
+int collision(int B1x, int B1y, int B2x, int B2y, int A1x, int A1y, int A2x, int A2y) {
+    if(A1y>=B1y && B1y>=A2y){
+        if(A1x>=B1x && B1x>=A2x){
+            return 1;
+        }
+        if(A1x>=B2x && B2x>=A2x){
+            return 1;
+        }
+    }
+    if(A1y>=B2y && B2y>=A2y){
+        if(A1x>=B2x && B2x>=A2x){
+            return 1;
+        }
+        if(A1x>=B1x && B1x>=A2x){
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void help(){
@@ -79,6 +86,7 @@ int main() {
     int posYmin= -posYmax;
 
     /* Initialisation*/
+    int partieStatus=0; /* 0= normal, 1=victoire, -1= game over*/
     //Lire le PPM pour connaitre la position de chaque énémi/obstache/bonnus et les metres dans les listes
     loadLevel(&foes, &obstacles);
     /* Boucle d'affichage */
@@ -140,14 +148,67 @@ int main() {
                 tmpBlock=tmpBlock->next;
                 continue;
             }
-            //dessiner le block s'il est dans l'écran
+            //si le block est dans l'écran
             if(tmpBlock->x<=(WINDOW_WIDTH*0.04)){
+                //dessin du block
                 drawBlock(tmpBlock);
+                //détecter la collision avec le joueur avec les block dans la seconde patie de l'écran pour faire mois de calculs
+                if(tmpBlock->x < -50){
+                    if(collision(joueur->x+joueur->Bx, joueur->y+joueur->By,joueur->x-joueur->Bx, joueur->y-joueur->By, 
+                        tmpBlock->x+BBBlock, tmpBlock->y+BBBlock, tmpBlock->x-BBBlock, tmpBlock->y-BBBlock)){
+                        printf("Ouch! tu t'es pris un mur!\n");
+                        partieStatus=-1;
+                    }
+                }
+                //Détection des collistions de lazers
+                tmpLazer=lazers;
+                while(tmpLazer!=NULL){
+                    if(collision(tmpLazer->x+BBLazer, tmpLazer->y+BBLazer,tmpLazer->x-BBLazer, tmpLazer->y-BBLazer,
+                        tmpBlock->x+BBBlock, tmpBlock->y+BBBlock, tmpBlock->x-BBBlock, tmpBlock->y-BBBlock)){
+                        removeLazerFromList(&tmpLazer, &lazers);
+                    }
+                    tmpLazer=tmpLazer->next;
+                }
             }
-
             tmpBlock=tmpBlock->next;
         }
 
+        //Détection collision lazer/joueur et lazer/énemi
+        tmpLazer=lazers;
+        while(tmpLazer!=NULL){
+            //lazer/joueur
+            if(tmpLazer->x<-50 && tmpLazer->speed<0){
+                //on ne teste que les lazers dans la bonne dirrection et dans la zonne du joueur
+                if(collision(tmpLazer->x+BBLazer, tmpLazer->y+BBLazer,tmpLazer->x-BBLazer, tmpLazer->y-BBLazer,
+                    joueur->x+joueur->Bx, joueur->y+joueur->By,joueur->x-joueur->Bx, joueur->y-joueur->By)){
+                    removeLazerFromList(&tmpLazer, &lazers);
+                    joueur->hp -= 1;
+                    printf("vous avez été touché! HP: %d/%d\n",joueur->hp, joueur->hpMax);
+                    if(joueur->hp <= 0){
+                        printf("Plus de vie!\n");
+                        partieStatus = -1;
+                    }
+                }
+            }
+            // lazer/énemi
+            if(tmpLazer->speed>0){
+                tmpShip=foes;
+                while(tmpShip!=NULL){
+                    if(collision(tmpLazer->x+BBLazer, tmpLazer->y+BBLazer,tmpLazer->x-BBLazer, tmpLazer->y-BBLazer,
+                        tmpShip->x+tmpShip->Bx, tmpShip->y+tmpShip->By, tmpShip->x-tmpShip->Bx, tmpShip->y-tmpShip->By)){
+                        removeShipFromList(&tmpShip, &foes);
+                        removeLazerFromList(&tmpLazer, &lazers);
+                        break;
+                    }
+                    tmpShip=tmpShip->next;
+                }
+            }
+            tmpLazer=tmpLazer->next;
+        }
+
+        if(partieStatus!=0){ //on vérifit si on doit continuer la partie
+            break;
+        }
         /* Boucle traitant les evenements */
         SDL_Event e;
         while(SDL_PollEvent(&e)) {
@@ -256,6 +317,13 @@ int main() {
         }
 
     }
+    /*FIN du jeu*/
+    if(partieStatus == 1){
+        printf("victoire\n");
+    }else{
+        printf("perdu\n");
+    }
+    
     printf("Libération de la mémoire:\n");
     printf("- Libération joueur\n");
     free(joueur);
