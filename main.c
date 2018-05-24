@@ -90,6 +90,7 @@ int main() {
     LazerList lazers=NULL;
     ShipList foes=NULL;
     BlockList obstacles=NULL;
+    BuffList buffs=NULL;
 
 
     int posYmax= (playableHeight-shipHeight)/2; //pour l'instant fait à l'oeuil (il faudrait trouver le moyen de le calculer)
@@ -190,7 +191,27 @@ int main() {
             }
             tmpBlock=tmpBlock->next;
         }
+        /************************************************************************opérations sur les buffs*/
+        BuffList tmpBuff=buffs;
+        while(tmpBuff!=NULL){
+            tmpBuff->x -= scrollSpeed;
+            //le buff sort de l'écrant
+            if(tmpBuff->x < WINDOW_WIDTH*-0.04){
+                printf("removeBuff\n");
+                removeBuffFromList(&tmpBuff, &buffs);
+                tmpBuff=tmpBuff->next;
+                continue;
+            }
+            //traitement si dans l'écran
+            if(tmpBuff->x <= WINDOW_WIDTH*0.04){
+                selectDrawBuff(tmpBuff);
+                //TO DO: gestion collision avec le joueur
+            }
+            tmpBuff=tmpBuff->next;
+        }
 
+
+        /************************************************************************Gestion de collisions*/
         //Détection collision lazer/joueur et lazer/énemi
         tmpLazer=lazers;
         while(tmpLazer!=NULL){

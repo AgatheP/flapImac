@@ -51,4 +51,10 @@ void addBlockToList(Block* block, BlockList* list);
 int removeBlockFromList(BlockList* block, BlockList* list);
 void freeAllBlock(BlockList* list);
 
+Buff* allocBuff(float x, float y, int type);
+
+void addBuffToList(Buff *buff, BuffList *list);
+
+int removeBuffFromList(BuffList* buff, BuffList* list);
+void freeBuffs(BuffList* list);
 #endif
