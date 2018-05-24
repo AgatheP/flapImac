@@ -135,6 +135,31 @@ void drawBlock(Block* block, GLuint texture){
     glPopMatrix();
     return;
 }
+void selectDrawBuff(Buff* buff){
+    switch(buff->type){
+        case 0:
+            //rien à dessiner
+            return;
+        default:
+            drawBuff(buff);
+    }
+}
+void drawBuff(Buff* buff){
+    glPointSize(10);
+    glPushMatrix();
+        glScalef(0.015,0.025,0);
+        glTranslatef(buff->x, buff->y, 0);
+        glEnd();
+
+        glBegin(GL_QUADS);
+            glColor3ub(255,255,255);
+            glVertex2f(BBBuff, BBBuff);
+            glVertex2f(BBBuff, -BBBuff);
+            glVertex2f(-BBBuff, -BBBuff);
+            glVertex2f(-BBBuff, BBBuff);
+        glEnd();
+    glPopMatrix();
+}
 
 void drawBackground(GLuint texture){
     glPushMatrix();

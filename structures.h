@@ -30,6 +30,12 @@ typedef struct Block{
     struct Block* next;
 }Block, *BlockList;
 
+typedef struct Buff{
+    float x, y;
+    int type;
+    struct Buff* next;
+}Buff, *BuffList;
+
 Ship * allocShip(float x, float y, int hpMax, int width, int height, int fireRate);
 void addShipToList(Ship * ship, ShipList * list);
 void freeShipList(ShipList * list);

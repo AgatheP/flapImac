@@ -146,3 +146,46 @@ void freeAllBlock(BlockList* list){
         //free(*list);
     }
 }
+
+Buff* allocBuff(float x, float y, int type){
+    Buff* b=(Buff*) malloc(sizeof(Buff));
+    if(!b){exit(1);}
+    b->x=x;
+    b->y=y;
+    b->type=type;
+    return b;
+}
+
+void addBuffToList(Buff *buff, BuffList *list){
+    if(*list==NULL){
+        *list = buff;
+    }else{
+        addBuffToList(buff, &(*list)->next);
+    }
+}
+
+int removeBuffFromList(BuffList* buff, BuffList* list){
+    if(*list ==NULL || *buff == NULL) return 0;
+    if(*buff == *list){
+        *list=(*list)->next;
+        free(*buff);
+        return 1;
+    }
+    if(*buff==(*list)->next){
+        (*list)->next=(*buff)->next;
+        free(*buff);
+        return 1;
+    }
+    return removeBuffFromList(buff, &(*list)->next);
+}
+void freeBuffs(BuffList* list){
+    if((*list)->next!=NULL){
+        BuffList tmpBuff=(*list)->next;
+        list=NULL;
+        //free(*list);
+        freeBuffs(&tmpBuff);
+    }else{
+        list=NULL;
+        //free(*list);
+    }
+}

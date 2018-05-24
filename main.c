@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "parameters.h"
 #include "structures.h"
 #include "draw.h"
 #include "level.h"
+#include "parameters.h"
 
 /*********************************************************************************  FONCTIONS  */
 

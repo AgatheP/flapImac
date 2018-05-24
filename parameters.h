@@ -13,8 +13,11 @@ static const unsigned int BIT_PER_PIXEL = 32;
 
 /* Nombre minimal de millisecondes separant le rendu de deux images */
 static const Uint32 FRAMERATE_MILLISECONDS = 1000 / 60;
+//Bounding box fixes
 static float BBLazer = 2;
-static int BBBlock= 4; //La bounding box des lazers est carré et on ne donne que la moitiée du côté
+static int BBBlock= 4;
+static float BBBuff=3.5;
+
 static float scrollSpeed = 0.40; //vitesse de déplacement horizontal du jeu
 static int playableHeight = 80;
 static int PPMHeight = 10;

@@ -19,4 +19,8 @@ void drawLazer(Lazer* lazer, GLuint texture);
 
 void drawBlock(Block* block, GLuint texture);
 
+void drawBuff(Buff* buff);
+
+void drawBackground(GLuint texture);
+
 #endif
